@@ -12,9 +12,21 @@ View your app in AI Studio: https://ai.studio/apps/3b211698-a0ba-4487-9c79-09804
 
 **Prerequisites:**  Node.js
 
-
 1. Install dependencies:
    `npm install`
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
+
+## Run with Docker
+
+1. Build the image:
+   `docker build -t ai-notes-generator-app .`
+2. Run the container (example):
+   `docker run --rm -p 3000:3000 -e VITE_GEMINI_API_KEY="$GEMINI_API_KEY" ai-notes-generator-app`
+3. Open http://localhost:3000
+
+Optional: create `.env` in project root with:
+   `VITE_GEMINI_API_KEY=your_key_here`
+and use `--env-file .env` with `docker run`.
+

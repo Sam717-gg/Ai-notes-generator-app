@@ -1,7 +1,9 @@
-import { GoogleGenAI } from "@google/genai";
 import { GenerationConfig, NoteType } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+const geminiApiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
+if (!geminiApiKey) {
+  console.warn('VITE_GEMINI_API_KEY is not set. AI generation will use fallback text.');
+}
 
 const SYSTEM_INSTRUCTIONS: Record<NoteType, string> = {
   'summary': "You are an expert at distilling complex information into concise, high-impact summaries. Focus on key takeaways and main arguments.",
@@ -29,6 +31,19 @@ export async function generateNote(
     - If the source content is too short or vague, try to infer context or ask for more details within the note structure.
     - Start with a clear, concise title for the note prefixed with '# '.
   `;
+
+  if (!geminiApiKey) {
+    return "# API key missing\nPlease set VITE_GEMINI_API_KEY and rebuild/restart the app.";
+  }
+
+  let ai;
+  try {
+    const { GoogleGenAI } = await import('@google/genai');
+    ai = new GoogleGenAI({ apiKey: geminiApiKey });
+  } catch (error) {
+    console.error('Error loading GoogleGenAI', error);
+    return "# AI adapter failed to load\nCheck browser console for details.";
+  }
 
   const response = await ai.models.generateContent({
     model,

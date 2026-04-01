@@ -70,6 +70,10 @@ export default function App() {
     notes.find(n => n.id === activeNoteId), 
   [notes, activeNoteId]);
 
+  useEffect(() => {
+    console.log('App rendered successfully');
+  }, []);
+
   const handleGenerate = async () => {
     if (!inputText.trim()) return;
     
